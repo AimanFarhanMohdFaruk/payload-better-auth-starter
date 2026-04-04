@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { getPayload } from '@/lib/payload/get-payload'
+import { listBlogPosts } from '@/lib/dal/blogs'
 
 import { formatDate } from 'date-fns'
 import type { SearchParams } from 'nuqs/server'
@@ -18,35 +18,15 @@ type PageProps = {
 }
 
 export async function BlogPosts({ searchParams }: PageProps) {
-  const payload = await getPayload()
-
-  // Parse search params using nuqs
   const { category, page } = await blogSearchParamsCache.parse(searchParams)
 
-  // Validate category
   const validCategory: Blog['category'] =
     category && isValidCategory(category) ? category : undefined
 
-  const blogPosts = await payload.find({
-    collection: 'blog',
-    depth: 1,
-    limit: 12,
+  const blogPosts = await listBlogPosts({
+    category: validCategory,
     page,
-    select: {
-      title: true,
-      slug: true,
-      category: true,
-      publishedAt: true,
-      authors: true,
-      meta: true,
-    },
-    where: validCategory
-      ? {
-          category: {
-            equals: validCategory,
-          },
-        }
-      : undefined,
+    limit: 12,
   })
   return (
     <>

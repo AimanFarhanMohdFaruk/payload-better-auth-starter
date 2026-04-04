@@ -1,0 +1,42 @@
+---
+description: Standard server/client data access — DAL, API routes, lib/api, TanStack Query hooks, thin UI.
+globs: src/components/**/*.tsx,src/hooks/**/*.ts,src/hooks/**/*.tsx,src/app/api/**/*.ts,src/lib/dal/**/*.ts,src/lib/api/**/*.ts
+alwaysApply: false
+---
+
+## Layers (fixed order for new features)
+
+1. **`src/lib/dal/<domain>.ts`** — `import 'server-only'`. Payload / DB access only. No `NextRequest`/`Response`, no React.
+2. **`src/app/api/<domain>/route.ts`** — HTTP boundary: query/body, auth, call DAL, `NextResponse`, status codes.
+3. **`src/lib/api/<domain>.ts`** — Browser-safe `fetch` + JSON parsing via [`src/lib/api/http.ts`](src/lib/api/http.ts). Export query key factories here (or beside hooks).
+4. **`src/hooks/use-<domain>.ts`** — `useQuery` / `useMutation` only; call `lib/api` functions. Comment which query keys each mutation invalidates.
+5. **UI (`src/components/...`)** — Presentational: no raw `fetch('/api/...')`, no `getPayload`, no inline `response.json()` error handling.
+
+## Canonical example (blogs)
+
+- DAL: [`src/lib/dal/blogs.ts`](src/lib/dal/blogs.ts) + overview [`src/lib/dal/README.md`](src/lib/dal/README.md)
+- Route: [`src/app/api/blogs/route.ts`](src/app/api/blogs/route.ts)
+- Client API: [`src/lib/api/blogs.ts`](src/lib/api/blogs.ts)
+- Hook: [`src/hooks/use-blog-posts.ts`](src/hooks/use-blog-posts.ts)
+
+## Reads: server vs client
+
+- **Server Components / metadata:** import DAL directly (same query as the API uses). Do not `fetch` your own origin for that read.
+- **Client components:** `lib/api` → `/api/...` → hooks with TanStack Query.
+
+## Naming
+
+- Use **`src/lib/api/`** for HTTP clients (not `lib/client/`, to avoid confusion with Next.js `"use client"`).
+
+## New feature checklist
+
+- [ ] Add or extend `src/lib/dal/<domain>.ts`
+- [ ] Add or extend `src/app/api/<domain>/route.ts`
+- [ ] Add `src/lib/api/<domain>.ts` (+ use `apiFetch` / `parseJsonResponse` from `http.ts`)
+- [ ] Add `src/hooks/use-<domain>.ts` with stable query keys
+- [ ] Compose UI using the hook or server props only
+
+## Do not
+
+- Put `getPayload()` or collection `find`/`update` in `components/screen` (or feature components).
+- Scatter `fetch('/api/...')` and one-off JSON parsing across components — centralise in `lib/api`.
