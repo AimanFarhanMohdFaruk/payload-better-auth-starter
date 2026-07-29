@@ -1,5 +1,15 @@
 # acme-website
 
+## 1.9.0
+
+### Minor Changes
+
+- **UI system (breaking):** Migrate the frontend component registry from shadcn/custom primitives to the current coss registry and Base UI composition APIs. Replace legacy component contracts such as `CardContent` with their documented coss equivalents such as `CardPanel`.
+- **Navigation and controls:** Rebuild the mobile navigation with coss Sheet, convert the theme selector and blog filters to ToggleGroup, and use coss Button composition for application links while preserving active-route and responsive behavior.
+- **Forms and feedback:** Move validation controls to coss Field, Input, InputGroup, Textarea, object-valued Select, and Checkbox composition; replace project Sonner usage with coss toast providers and `toastManager`, including the optional Form Builder templates.
+- **Accessibility:** Preserve labels, descriptions, invalid state, keyboard behavior, button types, icon-only accessible names, and decorative icon semantics throughout the migrated component surface.
+- **Cleanup:** Remove superseded UI wrappers and compatibility components, delete unused legacy primitives, and remove the direct `cmdk` and `vaul` dependencies. Keep Sonner only where required by Payload Auth and Better Auth UI.
+
 ## 1.8.0
 
 ### Minor Changes
