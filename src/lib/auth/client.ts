@@ -8,7 +8,8 @@ import {
 	usernameClient,
 } from 'better-auth/client/plugins'
 import { createAuthClient } from 'better-auth/react'
-import { toast } from 'sonner'
+
+import { toastManager } from '@/components/ui/toast'
 
 export const authClient = createAuthClient({
 	baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
@@ -31,7 +32,11 @@ export const authClient = createAuthClient({
 	fetchOptions: {
 		onError(e) {
 			if (e.error.status === 429) {
-				toast.error('Too many requests. Please try again later.')
+				toastManager.add({
+					title: 'Too many requests',
+					description: 'Please try again later.',
+					type: 'error',
+				})
 			}
 		},
 	},

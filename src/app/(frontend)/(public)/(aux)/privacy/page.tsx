@@ -16,7 +16,7 @@ export default async function TermsOfUsePage() {
 		return (
 			<Main>
 				<div className="mx-auto flex w-full max-w-2xl flex-col items-center justify-center">
-					<Alert variant="destructive">
+					<Alert variant="error">
 						<AlertTitle>No privacy policy found</AlertTitle>
 						<AlertDescription>
 							<Muted>

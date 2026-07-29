@@ -7,7 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-screen flex-col antialiased`}
+				className={`${GeistSans.variable} ${GeistMono.variable} relative isolate flex min-h-screen flex-col antialiased`}
 			>
 				<Providers>{children}</Providers>
 				<Analytics />

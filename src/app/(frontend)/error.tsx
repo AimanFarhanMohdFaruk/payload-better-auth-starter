@@ -31,7 +31,7 @@ export default function Error({
 			<Empty className="max-w-md border border-dashed">
 				<EmptyHeader>
 					<EmptyMedia variant="icon">
-						<AlertCircle className="text-destructive size-8" />
+						<AlertCircle aria-hidden="true" className="text-destructive size-8" />
 					</EmptyMedia>
 					<EmptyTitle>Something went wrong</EmptyTitle>
 					<EmptyDescription>

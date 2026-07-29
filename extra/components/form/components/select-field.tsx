@@ -1,21 +1,10 @@
 'use client'
 
-import {
-	Field,
-	FieldContent,
-	FieldDescription,
-	FieldError,
-	FieldLabel,
-} from '@/components/ui/field'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 import { useFieldContext } from '../hooks/form-context'
+import { FormFieldError } from './form-field-error'
 
 export type SelectOption = {
 	label: string
@@ -33,44 +22,35 @@ export default function SelectField({
 	description?: string
 	placeholder?: string
 	options: SelectOption[]
-} & Omit<React.ComponentProps<typeof Select>, 'value' | 'onValueChange' | 'items'>) {
+} & Omit<React.ComponentProps<typeof Select<SelectOption>>, 'value' | 'onValueChange' | 'items'>) {
 	const field = useFieldContext<string>()
 
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-
-	// Convert options to Base UI items format for automatic label lookup
-	const items = options.map((opt) => ({ label: opt.label, value: opt.value }))
+	const selected = options.find((option) => option.value === field.state.value) ?? null
 
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field invalid={isInvalid} name={field.name}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-			<FieldContent>
-				<Select
-					{...selectProps}
-					items={items}
-					value={field.state.value || null}
-					onValueChange={(value) => field.handleChange((value as string) ?? '')}
-				>
-					<SelectTrigger id={field.name} aria-invalid={isInvalid}>
-						<SelectValue>
-							{(value: string | null) => {
-								if (!value) return placeholder || 'Select...'
-								const option = options.find((opt) => opt.value === value)
-								return option?.label ?? value
-							}}
-						</SelectValue>
-					</SelectTrigger>
-					<SelectContent>
-						{options.map((option) => (
-							<SelectItem key={option.value} value={option.value}>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				{isInvalid && <FieldError errors={field.state.meta.errors} />}
-				{description && <FieldDescription>{description}</FieldDescription>}
-			</FieldContent>
+			<Select<SelectOption>
+				{...selectProps}
+				items={options}
+				itemToStringValue={(option) => option.value}
+				value={selected}
+				onValueChange={(option) => field.handleChange(option?.value ?? '')}
+			>
+				<SelectTrigger id={field.name} aria-invalid={isInvalid}>
+					<SelectValue placeholder={placeholder || 'Select...'} />
+				</SelectTrigger>
+				<SelectPopup>
+					{options.map((option) => (
+						<SelectItem key={option.value} value={option}>
+							{option.label}
+						</SelectItem>
+					))}
+				</SelectPopup>
+			</Select>
+			{isInvalid && <FormFieldError errors={field.state.meta.errors} />}
+			{description && <FieldDescription>{description}</FieldDescription>}
 		</Field>
 	)
 }

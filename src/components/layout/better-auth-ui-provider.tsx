@@ -3,9 +3,25 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
+import { toastManager } from '@/components/ui/toast'
 import { authClient } from '@/lib/auth/client'
 
 import { AuthUIProvider } from '@daveyplate/better-auth-ui'
+
+const showAuthToast = ({
+	message,
+	variant = 'default',
+}: {
+	message?: string
+	variant?: 'default' | 'success' | 'error' | 'info' | 'warning'
+}) => {
+	if (!message) return
+
+	toastManager.add({
+		title: message,
+		type: variant === 'default' ? undefined : variant,
+	})
+}
 
 export function BetterAuthUIProvider({ children }: { children: React.ReactNode }) {
 	const router = useRouter()
@@ -28,6 +44,7 @@ export function BetterAuthUIProvider({ children }: { children: React.ReactNode }
 			deleteUser={{
 				verification: true,
 			}}
+			toast={showAuthToast}
 		>
 			{children}
 		</AuthUIProvider>

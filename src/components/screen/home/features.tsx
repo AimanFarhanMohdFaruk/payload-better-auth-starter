@@ -2,7 +2,7 @@ import { FileText, Lock, Mail, Palette, Settings, Shield, Ship, User, Zap } from
 
 import { Container } from '@/components/layout/elements'
 import { AnimatedGroup } from '@/components/motion-primitives/animated-group'
-import { Card } from '@/components/ui/card'
+import { Card, CardPanel } from '@/components/ui/card'
 import { H3, Muted } from '@/components/ui/typography'
 
 const features = [
@@ -31,8 +31,7 @@ const features = [
 	{
 		icon: Palette,
 		title: 'Refined UI Components',
-		description:
-			'Enhanced Shadcn UI components with additional components useful for building content-rich websites.',
+		description: 'Polished coss UI components for building accessible, content-rich websites.',
 	},
 	{
 		icon: Settings,
@@ -62,10 +61,12 @@ export const Features = () => {
 			render={<AnimatedGroup className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" />}
 		>
 			{features.map((feature) => (
-				<Card variant="muted" className="h-full overflow-hidden p-6" key={feature.title}>
-					<feature.icon className="text-primary size-5" />
-					<H3 className="font-medium">{feature.title}</H3>
-					<Muted className="text-balance">{feature.description}</Muted>
+				<Card className="h-full overflow-hidden" key={feature.title}>
+					<CardPanel className="flex flex-col gap-3">
+						<feature.icon aria-hidden="true" className="text-primary" />
+						<H3 className="font-medium">{feature.title}</H3>
+						<Muted className="text-balance">{feature.description}</Muted>
+					</CardPanel>
 				</Card>
 			))}
 		</Container>

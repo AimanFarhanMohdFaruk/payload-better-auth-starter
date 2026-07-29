@@ -3,21 +3,14 @@
 import { PhoneIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import {
-	Field,
-	FieldContent,
-	FieldDescription,
-	FieldError,
-	FieldLabel,
-} from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-
-import { cn } from '@/lib/utils'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 
 import { lookup } from 'country-data-list'
 import parsePhoneNumber from 'libphonenumber-js'
 import { CircleFlag } from 'react-circle-flags'
 import { useFieldContext } from '../hooks/form-context'
+import { FormFieldError } from './form-field-error'
 
 export type CountryData = {
 	alpha2: string
@@ -45,7 +38,7 @@ export default function PhoneField({
 	defaultCountry?: string
 	onCountryChange?: (data: CountryData | undefined) => void
 } & Omit<
-	React.ComponentProps<typeof Input>,
+	React.ComponentProps<typeof InputGroupInput>,
 	'id' | 'name' | 'value' | 'onBlur' | 'onChange' | 'type'
 >) {
 	const field = useFieldContext<string>()
@@ -120,34 +113,33 @@ export default function PhoneField({
 	}
 
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field invalid={isInvalid} name={field.name}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-			<FieldContent>
-				<div className="relative">
-					<div className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2">
+			<InputGroup>
+				<InputGroupInput
+					{...inputProps}
+					id={field.name}
+					name={field.name}
+					value={value}
+					onBlur={field.handleBlur}
+					onChange={handlePhoneChange}
+					type="tel"
+					autoComplete="tel"
+					placeholder={placeholder}
+					aria-invalid={isInvalid}
+				/>
+				<InputGroupAddon align="inline-start">
+					<span aria-hidden="true">
 						{displayFlag ? (
 							<CircleFlag countryCode={displayFlag} height={16} className="size-4 rounded-full" />
 						) : (
-							<PhoneIcon className="text-muted-foreground size-4" />
+							<PhoneIcon />
 						)}
-					</div>
-					<Input
-						{...inputProps}
-						id={field.name}
-						name={field.name}
-						value={value}
-						onBlur={field.handleBlur}
-						onChange={handlePhoneChange}
-						type="tel"
-						autoComplete="tel"
-						placeholder={placeholder}
-						aria-invalid={isInvalid}
-						className={cn('pl-9', inputProps.className)}
-					/>
-				</div>
-				{isInvalid && <FieldError errors={field.state.meta.errors} />}
-				{description && <FieldDescription>{description}</FieldDescription>}
-			</FieldContent>
+					</span>
+				</InputGroupAddon>
+			</InputGroup>
+			{isInvalid && <FormFieldError errors={field.state.meta.errors} />}
+			{description && <FieldDescription>{description}</FieldDescription>}
 		</Field>
 	)
 }

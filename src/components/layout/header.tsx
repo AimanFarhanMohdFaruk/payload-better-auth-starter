@@ -1,16 +1,18 @@
 'use client'
-import { AppWindowMac, Menu, X } from 'lucide-react'
+import { AppWindowMac, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import {
-	NavigationMenu,
-	NavigationMenuItem,
-	NavigationMenuLink,
-	NavigationMenuList,
-	navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
+	Sheet,
+	SheetHeader,
+	SheetPanel,
+	SheetPopup,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet'
 
 import { cn } from '@/lib/utils'
 
@@ -18,11 +20,10 @@ import { SignedIn, SignedOut, UserButton } from '@daveyplate/better-auth-ui'
 import { AnimatePresence, motion } from 'motion/react'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { AcmeLogoIcon } from '../icons'
-import { Button } from '../ui/button'
 import { Container } from './elements'
 
 const navigationLinks = [
-	{ href: '/', label: 'Home', active: true },
+	{ href: '/', label: 'Home' },
 	{ href: '/features', label: 'Features' },
 	{ href: '/about', label: 'About' },
 	{ href: '/blog', label: 'Blog' },
@@ -48,7 +49,6 @@ export default function Header() {
 		<header
 			data-theme="dark"
 			{...(isScrolled && { 'data-scrolled': true })}
-			data-state={isMobileMenuOpen ? 'active' : 'inactive'}
 			className={cn(
 				'bg-background [--color-popover:color-mix(in_oklch,var(--color-muted)_25%,var(--color-background))] px-4 md:px-8',
 				!isLarge && 'sticky top-0 h-16 z-50',
@@ -57,28 +57,39 @@ export default function Header() {
 			<div
 				className={cn(
 					'relative',
-					'not-in-data-scrolled:has-data-[state=open]:[--viewport-translate:-4rem]',
 					!isLarge &&
-						'in-data-scrolled:border-b in-data-scrolled:border-foreground/5 in-data-scrolled:backdrop-blur in-data-scrolled:bg-card/50 absolute inset-x-0 px-4 md:px-8 top-0 z-50 h-16 overflow-hidden',
-					'max-lg:in-data-[state=active]:bg-card/50 max-lg:in-data-[state=active]:h-screen max-lg:in-data-[state=active]:backdrop-blur',
+						'in-data-scrolled:border-b in-data-scrolled:border-foreground/5 in-data-scrolled:backdrop-blur in-data-scrolled:bg-card/50 absolute inset-x-0 top-0 z-50 h-16 px-4 md:px-8',
 				)}
 			>
 				<Container>
-					<div className="relative flex flex-wrap items-center justify-between py-1.5 max-lg:not-in-data-[state=active]:h-16 lg:py-5">
-						<div className="max-lg:in-data-[state=active]:border-foreground/5 flex items-center justify-between gap-8 max-lg:h-14 max-lg:w-full max-lg:in-data-[state=active]:border-b">
+					<div className="relative flex flex-wrap items-center justify-between py-1.5 max-lg:h-16 lg:py-5">
+						<div className="flex items-center justify-between gap-8 max-lg:h-14 max-lg:w-full">
 							<Link href="/" aria-label="home">
-								<AcmeLogoIcon className="h-5" />
+								<AcmeLogoIcon aria-hidden="true" className="h-5" />
 							</Link>
 
-							<button
-								type="button"
-								onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-								aria-label={isMobileMenuOpen === true ? 'Close Menu' : 'Open Menu'}
-								className="relative z-20 -m-2.5 -mr-3 block cursor-pointer p-2.5 lg:hidden"
-							>
-								<Menu className="m-auto size-5 duration-200 in-data-[state=active]:scale-0 in-data-[state=active]:rotate-180 in-data-[state=active]:opacity-0" />
-								<X className="absolute inset-0 m-auto size-5 scale-0 -rotate-180 opacity-0 duration-200 in-data-[state=active]:scale-100 in-data-[state=active]:rotate-0 in-data-[state=active]:opacity-100" />
-							</button>
+							<Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+								<SheetTrigger
+									render={
+										<Button
+											aria-label="Open navigation"
+											className="lg:hidden"
+											size="icon"
+											variant="ghost"
+										/>
+									}
+								>
+									<Menu aria-hidden="true" />
+								</SheetTrigger>
+								<SheetPopup className="lg:hidden" side="right">
+									<SheetHeader>
+										<SheetTitle>Navigation</SheetTitle>
+									</SheetHeader>
+									<SheetPanel>
+										<MobileMenu closeMenu={() => setIsMobileMenuOpen(false)} pathname={pathname} />
+									</SheetPanel>
+								</SheetPopup>
+							</Sheet>
 						</div>
 
 						{isLarge && (
@@ -101,11 +112,11 @@ export default function Header() {
 													aria-label="home"
 													className="hover:bg-foreground/5 flex size-7 rounded-md"
 												>
-													<AcmeLogoIcon className="m-auto size-4" />
+													<AcmeLogoIcon aria-hidden="true" className="m-auto size-4" />
 												</Link>
 											</motion.div>
 										)}
-										<NavMenu key="nav-menu" />
+										<NavMenu key="nav-menu" pathname={pathname} />
 										{isScrolled && (
 											<motion.div
 												key="sign-in-button"
@@ -129,7 +140,7 @@ export default function Header() {
 														additionalLinks={[
 															{
 																signedIn: true,
-																icon: <AppWindowMac />,
+																icon: <AppWindowMac aria-hidden="true" />,
 																label: 'Dashboard',
 																href: '/dashboard',
 															},
@@ -152,23 +163,17 @@ export default function Header() {
 								</div>
 							</motion.div>
 						)}
-						{!isLarge && isMobileMenuOpen && (
-							<MobileMenu closeMenu={() => setIsMobileMenuOpen(false)} pathname={pathname} />
-						)}
-
 						<div className="mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
 							<div className="flex w-full flex-col sm:flex-row sm:gap-3 md:w-fit">
 								<SignedOut>
 									<div className="w-full">
-										<Link
-											href={`/sign-in?redirectTo=${pathname}`}
-											className={cn(
-												'relative block border-0 border-b py-4 md:py-0 text-lg',
-												'md:hover:bg-accent md:hover:text-accent-foreground dark:md:hover:bg-accent/50 md:text-sm md:border-b-0 md:px-3 md:rounded-md md:h-8 md:inline-flex md:items-center md:justify-center md:duration-100',
-											)}
+										<Button
+											render={<Link href={`/sign-in?redirectTo=${pathname}`} />}
+											size="sm"
+											variant="ghost"
 										>
 											Sign In
-										</Link>
+										</Button>
 									</div>
 								</SignedOut>
 								<SignedIn>
@@ -178,7 +183,7 @@ export default function Header() {
 										additionalLinks={[
 											{
 												signedIn: true,
-												icon: <AppWindowMac />,
+												icon: <AppWindowMac aria-hidden="true" />,
 												label: 'Dashboard',
 												href: '/dashboard',
 											},
@@ -196,37 +201,46 @@ export default function Header() {
 
 const MobileMenu = ({ closeMenu, pathname }: { closeMenu: () => void; pathname: string }) => {
 	return (
-		<nav className="w-full [--color-border:--alpha(var(--color-foreground)/5%)] [--color-muted:--alpha(var(--color-foreground)/5%)]">
-			{navigationLinks.map((link, index) => {
-				return (
-					<Link
-						key={index}
-						href={link.href}
-						onClick={closeMenu}
-						className="group relative block border-0 border-b py-4 text-lg"
-					>
-						{link.label}
-					</Link>
-				)
-			})}
+		<nav aria-label="Mobile navigation">
+			<div className="flex flex-col gap-1">
+				{navigationLinks.map((link) => {
+					const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
+
+					return (
+						<Button
+							className="w-full justify-start"
+							key={link.href}
+							render={
+								<Link
+									aria-current={isActive ? 'page' : undefined}
+									href={link.href}
+									onClick={closeMenu}
+								/>
+							}
+							variant={isActive ? 'secondary' : 'ghost'}
+						>
+							{link.label}
+						</Button>
+					)
+				})}
+			</div>
 			<SignedOut>
-				<Link
-					href={`/sign-in?redirectTo=${pathname}`}
-					onClick={closeMenu}
-					className="group relative block border-0 border-b py-4 text-lg"
+				<Button
+					className="mt-6 w-full"
+					render={<Link href={`/sign-in?redirectTo=${pathname}`} onClick={closeMenu} />}
 				>
 					Sign In
-				</Link>
+				</Button>
 			</SignedOut>
 			<SignedIn>
-				<div className="border-0 border-b py-4">
+				<div className="mt-6">
 					<UserButton
 						size="default"
 						variant="ghost"
 						additionalLinks={[
 							{
 								signedIn: true,
-								icon: <AppWindowMac />,
+								icon: <AppWindowMac aria-hidden="true" />,
 								label: 'Dashboard',
 								href: '/dashboard',
 							},
@@ -238,23 +252,26 @@ const MobileMenu = ({ closeMenu, pathname }: { closeMenu: () => void; pathname: 
 	)
 }
 
-const NavMenu = () => {
+const NavMenu = ({ pathname }: { pathname: string }) => {
 	return (
-		<NavigationMenu className="**:data-[slot=navigation-menu-viewport]:max-w-2xl **:data-[slot=navigation-menu-viewport]:min-w-lg **:data-[slot=navigation-menu-viewport]:translate-x-(--viewport-translate) **:data-[slot=navigation-menu-viewport]:bg-[color-mix(in_oklch,var(--color-muted)_25%,var(--color-background))] **:data-[slot=navigation-menu-viewport]:transition-all max-lg:hidden">
-			<NavigationMenuList className="**:data-[slot=navigation-menu-trigger]:text-foreground/75 gap-1 **:data-[slot=navigation-menu-trigger]:h-7 **:data-[slot=navigation-menu-trigger]:px-3 **:data-[slot=navigation-menu-trigger]:text-sm">
-				{navigationLinks.map((link, index) => (
-					<NavigationMenuItem key={index}>
-						<NavigationMenuLink
-							render={<Link href={link.href} />}
-							className={navigationMenuTriggerStyle({
-								className: 'text-foreground/75 h-7 px-3 text-sm',
-							})}
-						>
-							{link.label}
-						</NavigationMenuLink>
-					</NavigationMenuItem>
-				))}
-			</NavigationMenuList>
-		</NavigationMenu>
+		<nav aria-label="Primary" className="max-lg:hidden">
+			<ul className="flex items-center gap-1">
+				{navigationLinks.map((link) => {
+					const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)
+
+					return (
+						<li key={link.href}>
+							<Button
+								render={<Link aria-current={isActive ? 'page' : undefined} href={link.href} />}
+								size="sm"
+								variant={isActive ? 'secondary' : 'ghost'}
+							>
+								{link.label}
+							</Button>
+						</li>
+					)
+				})}
+			</ul>
+		</nav>
 	)
 }

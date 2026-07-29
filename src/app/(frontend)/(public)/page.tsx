@@ -10,7 +10,7 @@ export default function Home() {
 			<LayoutHeader
 				badge="Home"
 				title="Payload Starter Kit"
-				description="An opinionated starter built with PayloadCMS, PayloadAuth, and Shadcn UI."
+				description="An opinionated starter built with PayloadCMS, PayloadAuth, and coss UI."
 			/>
 			<SectionSpacing>
 				<Features />

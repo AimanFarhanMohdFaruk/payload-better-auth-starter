@@ -122,7 +122,7 @@ Replace **Acme**: logo in `src/components/icons.tsx` and `admin-icon.tsx`, favic
 
 ## Stack
 
-**Collections:** Users, Blog, Media, Globals. **Plugins:** Better Auth, SEO, Import/Export, S3, optional Form Builder. **UI:** Shadcn, Motion, theme, responsive.
+**Collections:** Users, Blog, Media, Globals. **Plugins:** Better Auth, SEO, Import/Export, S3, optional Form Builder. **UI:** coss, Motion, theme, responsive.
 
 ## Form plugin (optional)
 

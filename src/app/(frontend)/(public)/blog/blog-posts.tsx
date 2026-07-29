@@ -128,7 +128,7 @@ export async function BlogPosts({ searchParams }: PageProps) {
 				<Empty className="from-muted/50 to-background h-full bg-gradient-to-b from-30%">
 					<EmptyHeader>
 						<EmptyMedia variant="icon">
-							<Newspaper />
+							<Newspaper aria-hidden="true" />
 						</EmptyMedia>
 						<EmptyTitle>No Blog Posts</EmptyTitle>
 						<EmptyDescription>No blog posts found for {category}.</EmptyDescription>

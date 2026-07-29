@@ -2,18 +2,13 @@
 
 import type React from 'react'
 
+import { FormFieldError } from '@/components/form/components/form-field-error'
 import { useFieldContext } from '@/components/form/hooks/form-context'
-import {
-	Field,
-	FieldContent,
-	FieldDescription,
-	FieldError,
-	FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import {
 	Select as SelectComponent,
-	SelectContent,
 	SelectItem,
+	SelectPopup,
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
@@ -27,35 +22,36 @@ export const Select: React.FC<
 		placeholder?: string
 		width: string
 	}
-> = ({ label, options, width, description }) => {
+> = ({ label, options, width, description, placeholder }) => {
 	const field = useFieldContext<string>()
 
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+	const selected = options.find((option) => option.value === field.state.value) ?? null
 
 	return (
 		<Width width={width}>
-			<Field data-invalid={isInvalid}>
+			<Field invalid={isInvalid} name={field.name}>
 				<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-				<FieldContent>
-					<SelectComponent
-						name={field.name}
-						value={field.state.value}
-						onValueChange={(value) => field.handleChange(value as string)}
-					>
-						<SelectTrigger className="w-full" id={field.name} aria-invalid={isInvalid}>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							{options.map(({ label, value }) => (
-								<SelectItem key={value} value={value}>
-									{label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</SelectComponent>
-					{isInvalid && <FieldError errors={field.state.meta.errors} />}
-					{description && <FieldDescription>{description}</FieldDescription>}
-				</FieldContent>
+				<SelectComponent
+					items={options}
+					itemToStringValue={(option) => option.value}
+					name={field.name}
+					value={selected}
+					onValueChange={(option) => field.handleChange(option?.value ?? '')}
+				>
+					<SelectTrigger id={field.name} aria-invalid={isInvalid}>
+						<SelectValue placeholder={placeholder || 'Select...'} />
+					</SelectTrigger>
+					<SelectPopup>
+						{options.map((option) => (
+							<SelectItem key={option.value} value={option}>
+								{option.label}
+							</SelectItem>
+						))}
+					</SelectPopup>
+				</SelectComponent>
+				{isInvalid && <FormFieldError errors={field.state.meta.errors} />}
+				{description && <FieldDescription>{description}</FieldDescription>}
 			</Field>
 		</Width>
 	)

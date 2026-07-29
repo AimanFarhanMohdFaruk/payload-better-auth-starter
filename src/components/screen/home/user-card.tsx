@@ -10,11 +10,11 @@ export const UserCard = async () => {
 	const user = await currentUser()
 	if (!user) return null
 	return (
-		<Card variant="mixed" className="w-full max-w-md backdrop-blur-xs">
+		<Card className="w-full max-w-md backdrop-blur-xs">
 			<CardHeader>
 				<div className="flex items-center gap-2">
 					<Avatar className="size-10">
-						<AvatarImage src={user.image || ''} />
+						<AvatarImage src={user.image || ''} alt={`${user.name || 'User'} avatar`} />
 						<AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col">

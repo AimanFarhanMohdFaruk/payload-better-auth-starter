@@ -20,7 +20,7 @@ export default function NotFound() {
 				<Empty className="max-w-md border border-dashed">
 					<EmptyHeader>
 						<EmptyMedia variant="icon">
-							<FileQuestion className="size-8" />
+							<FileQuestion aria-hidden="true" className="size-8" />
 						</EmptyMedia>
 						<EmptyTitle>Page not found</EmptyTitle>
 						<EmptyDescription>

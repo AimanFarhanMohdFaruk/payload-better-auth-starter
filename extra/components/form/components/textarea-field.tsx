@@ -1,15 +1,10 @@
 'use client'
 
-import {
-	Field,
-	FieldContent,
-	FieldDescription,
-	FieldError,
-	FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 
 import { useFieldContext } from '../hooks/form-context'
+import { FormFieldError } from './form-field-error'
 
 export default function TextareaField({
 	label,
@@ -23,21 +18,19 @@ export default function TextareaField({
 
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field invalid={isInvalid} name={field.name}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-			<FieldContent>
-				<Textarea
-					{...textareaProps}
-					id={field.name}
-					name={field.name}
-					value={field.state.value}
-					onBlur={field.handleBlur}
-					onChange={(e) => field.handleChange(e.target.value)}
-					aria-invalid={isInvalid}
-				/>
-				{isInvalid && <FieldError errors={field.state.meta.errors} />}
-				{description && <FieldDescription>{description}</FieldDescription>}
-			</FieldContent>
+			<Textarea
+				{...textareaProps}
+				id={field.name}
+				name={field.name}
+				value={field.state.value}
+				onBlur={field.handleBlur}
+				onChange={(e) => field.handleChange(e.target.value)}
+				aria-invalid={isInvalid}
+			/>
+			{isInvalid && <FormFieldError errors={field.state.meta.errors} />}
+			{description && <FieldDescription>{description}</FieldDescription>}
 		</Field>
 	)
 }

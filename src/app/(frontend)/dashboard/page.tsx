@@ -20,7 +20,7 @@ export default function DashboardPage() {
 			<Empty className="w-full border border-dashed">
 				<EmptyHeader>
 					<EmptyMedia variant="icon">
-						<SquareDashedIcon />
+						<SquareDashedIcon aria-hidden="true" />
 					</EmptyMedia>
 					<EmptyTitle>Dashboard</EmptyTitle>
 					<EmptyDescription>Welcome to the dashboard.</EmptyDescription>

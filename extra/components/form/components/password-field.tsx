@@ -1,15 +1,14 @@
 'use client'
 
-import {
-	Field,
-	FieldContent,
-	FieldDescription,
-	FieldError,
-	FieldLabel,
-} from '@/components/ui/field'
-import { PasswordInput } from '@/components/ui/password-input'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { useState } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 
 import { useFieldContext } from '../hooks/form-context'
+import { FormFieldError } from './form-field-error'
 
 export default function PasswordField({
 	label,
@@ -21,17 +20,18 @@ export default function PasswordField({
 	description?: string
 	enableToggle?: boolean
 } & Omit<
-	React.ComponentProps<typeof PasswordInput>,
+	React.ComponentProps<typeof InputGroupInput>,
 	'id' | 'name' | 'value' | 'onBlur' | 'onChange'
 >) {
 	const field = useFieldContext<string>()
+	const [visible, setVisible] = useState(false)
 
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field invalid={isInvalid} name={field.name}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-			<FieldContent>
-				<PasswordInput
+			<InputGroup>
+				<InputGroupInput
 					{...inputProps}
 					id={field.name}
 					name={field.name}
@@ -39,11 +39,24 @@ export default function PasswordField({
 					onBlur={field.handleBlur}
 					onChange={(e) => field.handleChange(e.target.value)}
 					aria-invalid={isInvalid}
-					enableToggle={enableToggle}
+					type={visible ? 'text' : 'password'}
 				/>
-				{isInvalid && <FieldError errors={field.state.meta.errors} />}
-				{description && <FieldDescription>{description}</FieldDescription>}
-			</FieldContent>
+				{enableToggle && (
+					<InputGroupAddon align="inline-end">
+						<Button
+							aria-label={visible ? 'Hide password' : 'Show password'}
+							onClick={() => setVisible((current) => !current)}
+							size="icon-xs"
+							type="button"
+							variant="ghost"
+						>
+							{visible ? <EyeOffIcon aria-hidden="true" /> : <EyeIcon aria-hidden="true" />}
+						</Button>
+					</InputGroupAddon>
+				)}
+			</InputGroup>
+			{isInvalid && <FormFieldError errors={field.state.meta.errors} />}
+			{description && <FieldDescription>{description}</FieldDescription>}
 		</Field>
 	)
 }

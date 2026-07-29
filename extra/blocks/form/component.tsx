@@ -4,11 +4,11 @@ import { useSearchParams } from 'next/navigation'
 import type React from 'react'
 
 import RichText from '@/components/payload/rich-text'
+import { toastManager } from '@/components/ui/toast'
 
 import { cn } from '@/lib/utils'
 
 import { useStore } from '@tanstack/react-form'
-import { toast } from 'sonner'
 import type { Form } from '@/payload-types'
 import { useBlockForm } from '.'
 
@@ -87,17 +87,21 @@ export const FormBlock: React.FC<
 				}, 2500)
 			})
 
-			toast.promise(promise, {
-				loading: 'Submitting form...',
-				success: {
-					message: 'Form submitted',
+			toastManager.promise(promise, {
+				loading: {
+					title: 'Submitting form...',
+				},
+				success: () => ({
+					title: 'Form submitted',
 					description: (
 						<pre className="text-muted-foreground bg-muted overflow-x-auto rounded-md p-2 text-xs">
 							{JSON.stringify(dataToSend, null, 2)}
 						</pre>
 					),
-				},
-				error: 'Failed to submit form',
+				}),
+				error: () => ({
+					title: 'Failed to submit form',
+				}),
 			})
 
 			// Commented out for demo
