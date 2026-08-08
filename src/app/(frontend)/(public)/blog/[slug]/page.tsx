@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { Container } from '@/components/layout/elements'
+import { Container, Section } from '@/components/layout'
 import { Main } from '@/components/layout/main'
 import { LivePreviewListener } from '@/components/payload/live-preview-listener'
 
@@ -47,12 +47,14 @@ export default async function Post({ params, searchParams }: PageProps<'/blog/[s
 	}
 
 	return (
-		<Main className="pb-16 md:pt-16">
-			<Container className="w-full lg:grid lg:grid-cols-[1fr_44rem_1fr]">
-				<Suspense fallback={<BlogPostsSkeleton />}>
-					<BlogSection slug={slug} searchParams={searchParams} />
-				</Suspense>
-			</Container>
+		<Main className="my-0 px-0 md:px-0">
+			<Section spacing="sm">
+				<Container className="lg:grid lg:grid-cols-[1fr_44rem_1fr]">
+					<Suspense fallback={<BlogPostsSkeleton />}>
+						<BlogSection slug={slug} searchParams={searchParams} />
+					</Suspense>
+				</Container>
+			</Section>
 		</Main>
 	)
 }

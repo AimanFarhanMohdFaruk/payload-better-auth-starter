@@ -1,8 +1,9 @@
 import type { Metadata } from 'next/types'
 import { Suspense } from 'react'
 
-import { Container, LayoutHeader } from '@/components/layout/elements'
+import { Container, Section } from '@/components/layout'
 import { Main } from '@/components/layout/main'
+import { Entrance } from '@/components/motion-primitives'
 
 import type { SearchParams } from 'nuqs/server'
 import { BlogFilters, BlogFiltersSkeleton } from './blog-filters'
@@ -15,16 +16,28 @@ type PageProps = {
 
 export default async function Page({ searchParams }: PageProps) {
 	return (
-		<Main className="my-24">
-			<LayoutHeader title="News, insights and more from Acme" badge="Blog" />
-			<Container className="w-full">
-				<Suspense fallback={<BlogFiltersSkeleton />}>
-					<BlogFilters />
-				</Suspense>
-				<Suspense fallback={<BlogPostsSkeleton />}>
-					<BlogPosts searchParams={searchParams} />
-				</Suspense>
-			</Container>
+		<Main className="my-0 px-0 md:px-0">
+			<Section aria-labelledby="blog-title" spacing="lg">
+				<Container>
+					<Entrance>
+						<Section.Header>
+							<Section.Eyebrow>Blog</Section.Eyebrow>
+							<Section.Title id="blog-title" render={<h1 />}>
+								News, insights and more from Acme
+							</Section.Title>
+						</Section.Header>
+					</Entrance>
+
+					<Section.Content className="mt-10">
+						<Suspense fallback={<BlogFiltersSkeleton />}>
+							<BlogFilters />
+						</Suspense>
+						<Suspense fallback={<BlogPostsSkeleton />}>
+							<BlogPosts searchParams={searchParams} />
+						</Suspense>
+					</Section.Content>
+				</Container>
+			</Section>
 		</Main>
 	)
 }
