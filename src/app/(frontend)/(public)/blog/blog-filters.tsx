@@ -1,10 +1,8 @@
 'use client'
 
-import { InView } from '@/components/motion-primitives/in-view'
+import { Entrance } from '@/components/motion-primitives'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-
-import { inViewOptions } from '@/lib/animation'
 
 import { useQueryStates } from 'nuqs'
 import { BLOG_CATEGORIES, type BlogCategory, blogSearchParams } from './search-params'
@@ -25,7 +23,7 @@ export function BlogFilters() {
 	}
 
 	return (
-		<InView {...inViewOptions()}>
+		<Entrance.Fade>
 			<div className="mt-12 mb-6 -ml-0.5 flex justify-between gap-4 max-md:-mx-6 md:mt-16">
 				<div className="overflow-x-auto py-3 max-md:px-6">
 					<ToggleGroup
@@ -52,7 +50,7 @@ export function BlogFilters() {
 					</ToggleGroup>
 				</div>
 			</div>
-		</InView>
+		</Entrance.Fade>
 	)
 }
 

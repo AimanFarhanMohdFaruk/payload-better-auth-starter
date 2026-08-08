@@ -1,10 +1,8 @@
 import { Container } from '@/components/layout/elements'
-import { InView } from '@/components/motion-primitives/in-view'
+import { Entrance } from '@/components/motion-primitives'
 import { Services } from '@/components/screen/home/services'
 import { SignedInContent } from '@/components/screen/home/signed-in-content'
 import { SignedOutContent } from '@/components/screen/home/signed-out-content'
-
-import { inViewOptions } from '@/lib/animation'
 
 import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui'
 
@@ -14,7 +12,7 @@ export const DevTools = () => {
 			variant="muted"
 			className="grid-4 grid md:grid-cols-2 md:gap-8"
 			rootClassName="relative isolate bg-gradient-to-b from-muted/50 dark:from-muted/75 to-muted/0"
-			render={<InView {...inViewOptions()} as="section" />}
+			render={<Entrance render={<section />} />}
 		>
 			<div
 				className="absolute inset-0 z-[-1] opacity-20"

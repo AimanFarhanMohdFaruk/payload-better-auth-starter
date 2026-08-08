@@ -1,10 +1,8 @@
 import Link from 'next/link'
 
 import { Container } from '@/components/layout/elements'
-import { InView } from '@/components/motion-primitives/in-view'
+import { Entrance } from '@/components/motion-primitives'
 import { H2, Muted } from '@/components/ui/typography'
-
-import { inViewOptions } from '@/lib/animation'
 
 const colors = [
 	'foreground',
@@ -30,7 +28,7 @@ const colors = [
 export const ThemeColors = () => {
 	return (
 		<Container>
-			<InView {...inViewOptions()} as="section" className="mb-16">
+			<Entrance.Fade render={<section />} className="mb-16">
 				<H2>Theme Colors</H2>
 				<Muted className="mt-4 mb-8">
 					Visit{' '}
@@ -53,7 +51,7 @@ export const ThemeColors = () => {
 						<ColorPalette key={color} color={color} />
 					))}
 				</div>
-			</InView>
+			</Entrance.Fade>
 		</Container>
 	)
 }
