@@ -1,13 +1,15 @@
 import { Container } from '@/components/layout/elements'
-import { AnimatedGroup } from '@/components/motion-primitives/animated-group'
+import { Entrance } from '@/components/motion-primitives'
 import { UserCard } from '@/components/screen/home/user-card'
 
 export const SignedInContent = () => {
 	return (
 		<Container>
-			<AnimatedGroup preset="fade" className="flex flex-col gap-12">
-				<UserCard />
-			</AnimatedGroup>
+			<Entrance.Stagger effect="fade" className="flex flex-col gap-12">
+				<Entrance.Stagger.Item key="user-card">
+					<UserCard />
+				</Entrance.Stagger.Item>
+			</Entrance.Stagger>
 		</Container>
 	)
 }

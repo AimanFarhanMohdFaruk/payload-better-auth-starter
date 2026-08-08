@@ -1,7 +1,7 @@
 import { FileText, Lock, Mail, Palette, Settings, Shield, Ship, User, Zap } from 'lucide-react'
 
 import { Container } from '@/components/layout/elements'
-import { AnimatedGroup } from '@/components/motion-primitives/animated-group'
+import { Entrance } from '@/components/motion-primitives'
 import { Card, CardPanel } from '@/components/ui/card'
 import { H3, Muted } from '@/components/ui/typography'
 
@@ -57,18 +57,23 @@ const features = [
 
 export const Features = () => {
 	return (
-		<Container
-			render={<AnimatedGroup className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" />}
-		>
-			{features.map((feature) => (
-				<Card className="h-full overflow-hidden" key={feature.title}>
-					<CardPanel className="flex flex-col gap-3">
-						<feature.icon aria-hidden="true" className="text-primary" />
-						<H3 className="font-medium">{feature.title}</H3>
-						<Muted className="text-balance">{feature.description}</Muted>
-					</CardPanel>
-				</Card>
-			))}
+		<Container>
+			<Entrance.Stagger
+				effect="fade"
+				className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+			>
+				{features.map((feature) => (
+					<Entrance.Stagger.Item className="h-full" key={feature.title}>
+						<Card className="h-full overflow-hidden">
+							<CardPanel className="flex flex-col gap-3">
+								<feature.icon aria-hidden="true" className="text-primary" />
+								<H3 className="font-medium">{feature.title}</H3>
+								<Muted className="text-balance">{feature.description}</Muted>
+							</CardPanel>
+						</Card>
+					</Entrance.Stagger.Item>
+				))}
+			</Entrance.Stagger>
 		</Container>
 	)
 }

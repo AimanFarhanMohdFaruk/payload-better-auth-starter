@@ -2,9 +2,9 @@
 
 import { useRender } from '@base-ui/react/use-render'
 import { motion, type HTMLMotionProps, type Variants, useReducedMotion } from 'motion/react'
-import { forwardRef, type ReactElement } from 'react'
+import { createContext, forwardRef, type ReactElement, useContext } from 'react'
 
-export type EntranceEffect = 'reveal' | 'fade'
+export type EntranceEffect = 'reveal' | 'fade' | 'slide-up' | 'scale' | 'blur'
 
 export interface EntranceProps extends Omit<
 	HTMLMotionProps<'div'>,
@@ -26,6 +26,26 @@ export interface EntranceProps extends Omit<
 
 export type EntranceRevealProps = Omit<EntranceProps, 'effect'>
 export type EntranceFadeProps = Omit<EntranceProps, 'effect'>
+
+export interface EntranceStaggerProps extends Omit<EntranceProps, 'children' | 'transition'> {
+	children: ReactElement<EntranceStaggerItemProps> | ReactElement<EntranceStaggerItemProps>[]
+	/** Delays the first item in seconds. */
+	delay?: number
+	/** Delays each successive item in seconds. */
+	stagger?: number
+	/** Overrides the Motion transition applied to the stagger group. */
+	transition?: EntranceProps['transition']
+}
+
+export interface EntranceStaggerItemProps extends Omit<
+	HTMLMotionProps<'div'>,
+	'animate' | 'initial' | 'ref' | 'viewport' | 'whileInView'
+> {
+	/** Overrides the effect inherited from Entrance.Stagger. */
+	effect?: EntranceEffect
+	/** Replaces the default element while preserving merged props and refs. */
+	render?: useRender.RenderProp
+}
 
 type EntranceElementProps = useRender.ComponentProps<'div'>
 
@@ -52,6 +72,18 @@ const effectVariants: Record<EntranceEffect, Variants> = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1 },
 	},
+	'slide-up': {
+		hidden: { opacity: 0, y: 24 },
+		visible: { opacity: 1, y: 0 },
+	},
+	scale: {
+		hidden: { opacity: 0, scale: 0.96 },
+		visible: { opacity: 1, scale: 1 },
+	},
+	blur: {
+		hidden: { filter: 'blur(10px)', opacity: 0 },
+		visible: { filter: 'blur(0px)', opacity: 1 },
+	},
 }
 
 const defaultTransition: NonNullable<EntranceProps['transition']> = {
@@ -61,7 +93,7 @@ const defaultTransition: NonNullable<EntranceProps['transition']> = {
 
 interface EntrancePrimitiveProps extends EntranceProps {
 	effect: EntranceEffect
-	slot: 'entrance-fade' | 'entrance-reveal'
+	slot: 'entrance-fade' | 'entrance-reveal' | 'entrance'
 }
 
 const EntrancePrimitive = forwardRef<HTMLDivElement, EntrancePrimitiveProps>(
@@ -120,6 +152,97 @@ export const EntranceFade = forwardRef<HTMLDivElement, EntranceFadeProps>(
 	},
 )
 
+interface EntranceStaggerContextValue {
+	delay: number
+	effect: EntranceEffect
+	stagger: number
+}
+
+const EntranceStaggerContext = createContext<EntranceStaggerContextValue | null>(null)
+
+export const EntranceStaggerItem = forwardRef<HTMLDivElement, EntranceStaggerItemProps>(
+	function EntranceStaggerItem(
+		{ effect: effectOverride, transition = defaultTransition, variants, ...props },
+		ref,
+	): ReactElement {
+		const context = useContext(EntranceStaggerContext)
+
+		if (!context) {
+			throw new Error('Entrance.Stagger.Item must be rendered inside Entrance.Stagger.')
+		}
+
+		const effect = effectOverride ?? context.effect
+
+		return (
+			<MotionEntranceElement
+				{...props}
+				ref={ref}
+				data-slot="entrance-stagger-item"
+				transition={transition}
+				variants={variants ?? effectVariants[effect]}
+			/>
+		)
+	},
+)
+
+export const EntranceStagger = Object.assign(
+	forwardRef<HTMLDivElement, EntranceStaggerProps>(function EntranceStagger(
+		{
+			children,
+			delay = 0,
+			effect = 'reveal',
+			isActive,
+			once = true,
+			stagger = 0.1,
+			transition,
+			variants,
+			viewport,
+			...props
+		},
+		ref,
+	): ReactElement {
+		const shouldReduceMotion = useReducedMotion()
+		const isControlled = isActive !== undefined
+		const animate = shouldReduceMotion
+			? 'visible'
+			: isControlled
+				? isActive
+					? 'visible'
+					: 'hidden'
+				: undefined
+		const groupVariants: Variants = variants ?? {
+			hidden: {},
+			visible: {
+				transition: shouldReduceMotion
+					? { delayChildren: 0, staggerChildren: 0 }
+					: { delayChildren: delay, staggerChildren: stagger, ...transition },
+			},
+		}
+
+		return (
+			<EntranceStaggerContext value={{ delay, effect, stagger }}>
+				<MotionEntranceElement
+					{...props}
+					ref={ref}
+					animate={animate}
+					data-slot="entrance-stagger"
+					initial={shouldReduceMotion ? false : 'hidden'}
+					variants={groupVariants}
+					viewport={
+						isControlled || shouldReduceMotion
+							? undefined
+							: { margin: '0px 0px -20% 0px', once, ...viewport }
+					}
+					whileInView={isControlled || shouldReduceMotion ? undefined : 'visible'}
+				>
+					{children}
+				</MotionEntranceElement>
+			</EntranceStaggerContext>
+		)
+	}),
+	{ Item: EntranceStaggerItem },
+)
+
 const EntranceComponent = forwardRef<HTMLDivElement, EntranceProps>(function Entrance(
 	{ effect = 'reveal', ...props },
 	ref,
@@ -129,7 +252,9 @@ const EntranceComponent = forwardRef<HTMLDivElement, EntranceProps>(function Ent
 			{...props}
 			effect={effect}
 			ref={ref}
-			slot={effect === 'fade' ? 'entrance-fade' : 'entrance-reveal'}
+			slot={
+				effect === 'fade' ? 'entrance-fade' : effect === 'reveal' ? 'entrance-reveal' : 'entrance'
+			}
 		/>
 	)
 })
@@ -137,4 +262,5 @@ const EntranceComponent = forwardRef<HTMLDivElement, EntranceProps>(function Ent
 export const Entrance = Object.assign(EntranceComponent, {
 	Fade: EntranceFade,
 	Reveal: EntranceReveal,
+	Stagger: EntranceStagger,
 })
