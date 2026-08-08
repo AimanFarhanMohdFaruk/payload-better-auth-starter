@@ -29,17 +29,15 @@
 <details>
 <summary id="custom-ui-components">Custom UI Components </summary>
 
-| Component                                                                                                                             | Description                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [LayoutHeader](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L100)      | A header component with a badge, h1 title, and description.                |
-| [SectionSpacing](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L340)    | A spacing component for vertical spacing between sections.                 |
-| [SectionGrid](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L300)       | A grid layout with multiple content items.                                 |
-| [SectionGridItem](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L310)   | An individual content item for vertical row layout.                        |
-| [SectionHeader](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L320)     | A section header with a badge, h2 title, and description.                  |
-| [SectionHorizontal](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L330) | A horizontal section with a title, description, and media.                 |
-| [ImageMedia](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L200)        | A reusable image media component with customizable gradients and styling.  |
-| [VideoMedia](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L250)        | A reusable Vimeo video media component with configurable playback options. |
-| [FullWidthImage](https://github.com/fluid-design-io/payload-better-auth-starter/blob/main/src/components/layout/elements.tsx#L270)    | A large full-width image section with a glow effect.                       |
+| Component                                                                                                                           | Description                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [Section](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/layout/section)                   | A compound section primitive with composable header, content, and media. |
+| [Container](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/layout/container)               | A focused horizontal width and gutter primitive.                         |
+| [MediaFrame](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/layout/media-frame)            | A compound figure primitive with content, overlay, and caption slots.    |
+| [VimeoEmbed](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/layout/vimeo-embed)            | An accessible Vimeo embed for public and unlisted videos.                |
+| [Entrance](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/motion-primitives/entrance)      | Composable viewport reveal, fade, and explicit stagger primitives.       |
+| [TextEffect](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/motion-primitives/text-effect) | Reduced-motion-aware animated text segmentation.                         |
+| [GlowEffect](https://github.com/fluid-design-io/payload-better-auth-starter/tree/main/src/components/motion-primitives/glow-effect) | Decorative glow effects with static reduced-motion behavior.             |
 
 </details>
 
@@ -47,53 +45,33 @@
 <summary>Example usage</summary>
 
 ```tsx
-import {
-	FullWidthImage,
-	ImageMedia,
-	LayoutHeader,
-	SectionGrid,
-	SectionGridItem,
-	SectionHeader,
-	SectionHorizontal,
-	SectionSpacing,
-} from '@/components/layout/elements'
-import { Main } from '@/components/layout/main'
+import { Container, MediaFrame, Section } from '@/components/layout'
+import { Entrance } from '@/components/motion-primitives'
 
 export default function Page() {
 	return (
-		<Main>
-			<LayoutHeader title="Features" badge="Acme" description="..." />
-			<SectionSpacing>
-				<SectionGrid>
-					<SectionGridItem
-						title="Title 1"
-						description="..."
-						media={<ImageMedia src={image} alt="Title 1" zoom />}
-					/>
-					<SectionGridItem
-						title="Title 2"
-						description="..."
-						media={<ImageMedia src={image} alt="Title 2" zoom />}
-					/>
-				</SectionGrid>
-				<FullWidthImage image={image} caption="Image Caption" alt="Title 1" zoom />
-				<SectionHorizontal
-					variant="right"
-					title="Title 3"
-					description="..."
-					media={
-						<ImageMedia
-							src={image}
-							alt="Title 3"
-							className="p-8"
-							imgClassName="rounded-2xl"
-							gradientColors={['from-cyan-200/20', 'via-cyan-300/20', 'to-cyan-500/20']}
-							zoom
-						/>
-					}
-				/>
-			</SectionSpacing>
-		</Main>
+		<Section variant="muted" layout="full-width">
+			<Container>
+				<Section.Header>
+					<Section.Eyebrow>Acme</Section.Eyebrow>
+					<Section.Title>Features</Section.Title>
+					<Section.Description>Composable layout and motion primitives.</Section.Description>
+				</Section.Header>
+			</Container>
+
+			<Entrance.Stagger>
+				<Entrance.Stagger.Item>
+					<Section.Media>
+						<MediaFrame>
+							<MediaFrame.Content>
+								<img src="/website-template-OG.png" alt="Feature preview" />
+							</MediaFrame.Content>
+							<MediaFrame.Caption>Feature preview</MediaFrame.Caption>
+						</MediaFrame>
+					</Section.Media>
+				</Entrance.Stagger.Item>
+			</Entrance.Stagger>
+		</Section>
 	)
 }
 ```

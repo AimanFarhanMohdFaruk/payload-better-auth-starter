@@ -1,5 +1,25 @@
+import {
+	SectionContent,
+	SectionDescription,
+	SectionEyebrow,
+	SectionHeader,
+	SectionIcon,
+	SectionMedia,
+	SectionRoot,
+	SectionTitle,
+} from './section'
+
+export const Section = Object.assign(SectionRoot, {
+	Content: SectionContent,
+	Description: SectionDescription,
+	Eyebrow: SectionEyebrow,
+	Header: SectionHeader,
+	Icon: SectionIcon,
+	Media: SectionMedia,
+	Title: SectionTitle,
+})
+
 export {
-	Section,
 	SectionContent,
 	type SectionContentProps,
 	SectionDescription,

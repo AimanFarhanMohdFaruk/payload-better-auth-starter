@@ -75,9 +75,3 @@ export const MediaFrameCaption = forwardRef<HTMLElement, MediaFrameCaptionProps>
 		})
 	},
 )
-
-export const MediaFrame = Object.assign(MediaFrameRoot, {
-	Caption: MediaFrameCaption,
-	Content: MediaFrameContent,
-	Overlay: MediaFrameOverlay,
-})

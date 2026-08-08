@@ -1,5 +1,17 @@
+import {
+	MediaFrameCaption,
+	MediaFrameContent,
+	MediaFrameOverlay,
+	MediaFrameRoot,
+} from './media-frame'
+
+export const MediaFrame = Object.assign(MediaFrameRoot, {
+	Caption: MediaFrameCaption,
+	Content: MediaFrameContent,
+	Overlay: MediaFrameOverlay,
+})
+
 export {
-	MediaFrame,
 	MediaFrameCaption,
 	type MediaFrameCaptionProps,
 	MediaFrameContent,

@@ -185,8 +185,8 @@ export const EntranceStaggerItem = forwardRef<HTMLDivElement, EntranceStaggerIte
 	},
 )
 
-export const EntranceStagger = Object.assign(
-	forwardRef<HTMLDivElement, EntranceStaggerProps>(function EntranceStagger(
+export const EntranceStaggerRoot = forwardRef<HTMLDivElement, EntranceStaggerProps>(
+	function EntranceStagger(
 		{
 			children,
 			delay = 0,
@@ -239,11 +239,10 @@ export const EntranceStagger = Object.assign(
 				</MotionEntranceElement>
 			</EntranceStaggerContext>
 		)
-	}),
-	{ Item: EntranceStaggerItem },
+	},
 )
 
-const EntranceComponent = forwardRef<HTMLDivElement, EntranceProps>(function Entrance(
+export const EntranceRoot = forwardRef<HTMLDivElement, EntranceProps>(function Entrance(
 	{ effect = 'reveal', ...props },
 	ref,
 ): ReactElement {
@@ -257,10 +256,4 @@ const EntranceComponent = forwardRef<HTMLDivElement, EntranceProps>(function Ent
 			}
 		/>
 	)
-})
-
-export const Entrance = Object.assign(EntranceComponent, {
-	Fade: EntranceFade,
-	Reveal: EntranceReveal,
-	Stagger: EntranceStagger,
 })

@@ -162,13 +162,3 @@ export function SectionMedia({ className, render, ...props }: SectionMediaProps)
 		render,
 	})
 }
-
-export const Section = Object.assign(SectionRoot, {
-	Content: SectionContent,
-	Description: SectionDescription,
-	Eyebrow: SectionEyebrow,
-	Header: SectionHeader,
-	Icon: SectionIcon,
-	Media: SectionMedia,
-	Title: SectionTitle,
-})
