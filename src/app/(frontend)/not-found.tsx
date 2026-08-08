@@ -1,7 +1,7 @@
 import { FileQuestion } from 'lucide-react'
 import Link from 'next/link'
 
-import { Container } from '@/components/layout/elements'
+import { Container } from '@/components/layout'
 import { Main } from '@/components/layout/main'
 import { Button } from '@/components/ui/button'
 import {

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { Container } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
 	Sheet,
@@ -20,7 +21,6 @@ import { SignedIn, SignedOut, UserButton } from '@daveyplate/better-auth-ui'
 import { AnimatePresence, motion } from 'motion/react'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { AcmeLogoIcon } from '../icons'
-import { Container } from './elements'
 
 const navigationLinks = [
 	{ href: '/', label: 'Home' },
@@ -61,7 +61,7 @@ export default function Header() {
 						'in-data-scrolled:border-b in-data-scrolled:border-foreground/5 in-data-scrolled:backdrop-blur in-data-scrolled:bg-card/50 absolute inset-x-0 top-0 z-50 h-16 px-4 md:px-8',
 				)}
 			>
-				<Container>
+				<Container gutter="none">
 					<div className="relative flex flex-wrap items-center justify-between py-1.5 max-lg:h-16 lg:py-5">
 						<div className="flex items-center justify-between gap-8 max-lg:h-14 max-lg:w-full">
 							<Link href="/" aria-label="home">

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { Container } from '@/components/layout/elements'
+import { Container } from '@/components/layout'
 import { Entrance } from '@/components/motion-primitives'
 import { Button } from '@/components/ui/button'
 import { Card, CardPanel } from '@/components/ui/card'

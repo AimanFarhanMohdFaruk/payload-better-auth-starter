@@ -1,6 +1,6 @@
 import { FileText, Lock, Mail, Palette, Settings, Shield, Ship, User, Zap } from 'lucide-react'
 
-import { Container } from '@/components/layout/elements'
+import { Container } from '@/components/layout'
 import { Entrance } from '@/components/motion-primitives'
 import { Card, CardPanel } from '@/components/ui/card'
 import { H3, Muted } from '@/components/ui/typography'

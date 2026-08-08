@@ -1,4 +1,4 @@
-import { Container } from '@/components/layout/elements'
+import { Container } from '@/components/layout'
 import { Main } from '@/components/layout/main'
 
 import { AccountView } from '@daveyplate/better-auth-ui'

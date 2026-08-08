@@ -1,4 +1,4 @@
-import { Container } from '@/components/layout/elements'
+import { Container } from '@/components/layout'
 import { Entrance } from '@/components/motion-primitives'
 import { UserCard } from '@/components/screen/home/user-card'
 
