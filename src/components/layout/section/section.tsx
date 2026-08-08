@@ -3,7 +3,7 @@
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import type { VariantProps } from 'class-variance-authority'
-import { createContext, useContext, type ReactElement } from 'react'
+import { createContext, type ReactElement } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -138,7 +138,7 @@ export function SectionDescription({
 
 export function SectionContent({ className, render, ...props }: SectionContentProps): ReactElement {
 	const defaultProps = {
-		className: cn(className),
+		className,
 		'data-slot': 'section-content',
 	}
 
@@ -150,9 +150,8 @@ export function SectionContent({ className, render, ...props }: SectionContentPr
 }
 
 export function SectionMedia({ className, render, ...props }: SectionMediaProps): ReactElement {
-	const { layout } = useContext(SectionContext)
 	const defaultProps = {
-		className: cn(layout === 'full-width' && '-mx-4 md:-mx-8', className),
+		className,
 		'data-slot': 'section-media',
 	}
 

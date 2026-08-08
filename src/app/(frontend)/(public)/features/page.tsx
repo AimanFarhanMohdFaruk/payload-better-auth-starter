@@ -54,8 +54,8 @@ export default function FeaturesPage() {
 						<Entrance.Stagger className="grid gap-6 lg:grid-cols-2" effect="slide-up">
 							{features.map((feature) => (
 								<Entrance.Stagger.Item key={feature.title}>
-									<MediaFrame className="bg-background overflow-hidden rounded-3xl border shadow-sm">
-										<MediaFrame.Content className="bg-muted aspect-[16/10] overflow-hidden">
+									<MediaFrame className="bg-background overflow-hidden rounded-3xl border shadow-xs">
+										<MediaFrame.Content className="aspect-16/10 overflow-hidden">
 											<Image
 												src={image}
 												alt="Acme application interface"
@@ -138,7 +138,7 @@ export default function FeaturesPage() {
 						<Entrance.Fade>
 							<MediaFrame className="bg-muted overflow-hidden rounded-3xl border p-3 shadow-xl">
 								<MediaFrame.Content className="overflow-hidden rounded-2xl">
-									<Image
+									<ImageZoom
 										src={image}
 										alt="Composable Acme dashboard"
 										className="size-full object-cover"
