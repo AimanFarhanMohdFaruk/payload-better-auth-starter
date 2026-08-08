@@ -1,9 +1,4 @@
-import {
-	Container,
-	LayoutHeader,
-	SectionHeader,
-	SectionSpacing,
-} from '@/components/layout/elements'
+import { Container, Section } from '@/components/layout'
 import { Main } from '@/components/layout/main'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -49,21 +44,31 @@ export default async function AboutPage() {
 
 	return (
 		<Main>
-			<LayoutHeader
-				title="About"
-				badge="Template"
-				description="Learn about this starter template, view the changelog, and see what packages are included."
-			/>
-
-			<SectionSpacing>
-				{/* Dependencies Section */}
+			<Section spacing="sm" aria-labelledby="about-title">
 				<Container>
-					<SectionHeader
-						title="Dependencies"
-						badge="Packages"
-						description="Production dependencies included in this starter template."
-					/>
-					<div className="mt-8">
+					<Section.Header>
+						<Section.Eyebrow>Template</Section.Eyebrow>
+						<Section.Title id="about-title" render={<h1 />}>
+							About
+						</Section.Title>
+						<Section.Description>
+							Learn about this starter template, view the changelog, and see what packages are
+							included.
+						</Section.Description>
+					</Section.Header>
+				</Container>
+			</Section>
+
+			<Section aria-labelledby="dependencies-title">
+				<Container>
+					<Section.Header>
+						<Section.Eyebrow>Packages</Section.Eyebrow>
+						<Section.Title id="dependencies-title">Dependencies</Section.Title>
+						<Section.Description>
+							Production dependencies included in this starter template.
+						</Section.Description>
+					</Section.Header>
+					<Section.Content className="mt-8">
 						<Table>
 							<TableHeader>
 								<TableRow>
@@ -92,17 +97,20 @@ export default async function AboutPage() {
 								)}
 							</TableBody>
 						</Table>
-					</div>
+					</Section.Content>
 				</Container>
+			</Section>
 
-				{/* DevDependencies Section */}
+			<Section variant="muted" aria-labelledby="dev-dependencies-title">
 				<Container>
-					<SectionHeader
-						title="Dev Dependencies"
-						badge="Development"
-						description="Development dependencies used for building and tooling."
-					/>
-					<div className="mt-8">
+					<Section.Header>
+						<Section.Eyebrow>Development</Section.Eyebrow>
+						<Section.Title id="dev-dependencies-title">Dev Dependencies</Section.Title>
+						<Section.Description>
+							Development dependencies used for building and tooling.
+						</Section.Description>
+					</Section.Header>
+					<Section.Content className="mt-8">
 						<Table>
 							<TableHeader>
 								<TableRow>
@@ -131,9 +139,9 @@ export default async function AboutPage() {
 								)}
 							</TableBody>
 						</Table>
-					</div>
+					</Section.Content>
 				</Container>
-			</SectionSpacing>
+			</Section>
 		</Main>
 	)
 }
