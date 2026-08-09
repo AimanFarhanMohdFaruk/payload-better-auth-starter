@@ -1,5 +1,26 @@
 # acme-website
 
+## 1.10.0
+
+### Minor Changes
+
+- **Layout primitives (breaking):** Replace the 500-line `layout/elements.tsx` grab bag with focused compound roots under `components/layout`: `Section` (with `Header`, `Icon`, `Eyebrow`, `Title`, `Description`, `Content`, `Media`), `Container`, `MediaFrame` (with `Content`, `Overlay`, `Caption`), and `VimeoEmbed`. Each is a callable root with no `.Root` member, exposes HeroUI-style named exports and public prop types, forwards native props and refs, supports the Base UI `render` contract, and carries a stable `data-slot`. `LayoutHeader`, `SectionHeader`, `SectionHorizontal`, `SectionGrid`, `SectionGridItem`, `SectionSpacing`, `FullWidthImage`, `ImageMedia`, and `VideoMedia` are removed with no compatibility wrappers.
+- **Animation primitives (breaking):** Replace `InView` and `AnimatedGroup` with one `Entrance` family — `Entrance`, `Entrance.Reveal`, `Entrance.Fade`, `Entrance.Stagger`, and `Entrance.Stagger.Item` — over a shared `reveal | fade | slide-up | scale | blur` effect union. Viewport entry defaults to a `-20%` bottom margin and plays once; supplying `isActive` replaces viewport observation entirely. Reduced motion is handled internally by every primitive rather than left to call sites. Trim `GlowEffect` to `rotate | pulse | breathe | static` and drop all `@ts-nocheck` from the animation surface.
+- **Layout and animation are fully decoupled:** Layout primitives no longer import animation, so headers, grids, and full-width media stop hard-wiring reveal behavior. Pages compose motion explicitly, either by wrapping or through `render` (for example `<Container render={<Entrance />} />`).
+- **Layout primitives are server components again:** `Section`, `Container`, `MediaFrame`, and `VimeoEmbed` no longer carry `'use client'`. Base UI's `useRender` invokes no hooks when `document` is undefined, so these render on the server and no longer ship Base UI, CVA, and `tailwind-merge` to the browser just to render a wrapper element. Only `Entrance`, `TextEffect`, and `GlowEffect` remain client modules.
+- **App shell separated from reusable primitives:** Move `Main`, `Header`, `Footer`, `ThemeSelector`, `ThemeProvider`, and `BetterAuthUIProvider` to `components/shell`, leaving `components/layout` as exactly the extraction-ready surface.
+- **Accessibility:** `aria-labelledby`, `id`, and other caller-owned attributes now survive render boundaries. The previous `InView` silently dropped native props despite typechecking, so section heading relationships were being lost at runtime.
+- **React 19 conventions:** Drop `forwardRef` across every layout and motion primitive in favor of ref-as-prop, so public prop types stay `ComponentPropsWithRef`-shaped instead of splitting into `PropsWithoutRef & RefAttributes`.
+
+### Patch Changes
+
+- **Entrance stagger:** Fold stagger orchestration into the group's `visible` variant instead of replacing it, so passing `variants` to `Entrance.Stagger` no longer silently discards `delay` and `stagger`. Values a variant states explicitly still win.
+- **Entrance stagger items:** Downgrade `Entrance.Stagger.Item`'s missing-context throw to a development warning — it now renders unanimated instead of unmounting the tree in production — and give it its own reduced-motion handling rather than relying on parent propagation.
+- **Entrance viewport:** Make `once` the single source of replay behavior by removing it from the accepted `viewport` options, so the two can no longer disagree.
+- **Vimeo:** Rename `playerOptions.title` to `showTitle`, mapped back to Vimeo's `title` query parameter, so it no longer collides with the required accessible `title` prop. Add `allow-popups-to-escape-sandbox` and `allow-forms` to the sandbox default, which previously trapped the player's "Watch on Vimeo" link and blocked its settings controls.
+- **Section:** Remove the unread layout context and the inert `layout` variant; `layout="full-width"` only ever emitted an unstyled data attribute.
+- **Cleanup:** Delete `src/lib/animation.ts` and the `transitionVariants` / `staggerVariants` helpers from `src/lib/utils.ts`, now that transitions live inside the animation contract. Resolve the outstanding iframe-sandbox lint warning via `VimeoEmbed`.
+
 ## 1.9.0
 
 ### Minor Changes
