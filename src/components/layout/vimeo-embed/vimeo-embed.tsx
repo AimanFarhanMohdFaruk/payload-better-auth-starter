@@ -17,9 +17,15 @@ export interface VimeoPlayerOptions {
 	playsinline?: boolean
 	portrait?: boolean
 	quality?: '240p' | '360p' | '540p' | '720p' | '1080p' | '2k' | '4k' | 'auto'
+	/** Shows the video title inside the player chrome. Distinct from the required `title` prop. */
+	showTitle?: boolean
 	speed?: boolean
 	texttrack?: string
-	title?: boolean
+}
+
+/** Player options whose public name differs from the Vimeo query parameter. */
+const playerOptionParams: Partial<Record<keyof VimeoPlayerOptions, string>> = {
+	showTitle: 'title',
 }
 
 export interface VimeoSourceProps {
@@ -44,7 +50,8 @@ function buildVimeoUrl({
 
 	for (const [option, value] of Object.entries(playerOptions ?? {})) {
 		if (value !== undefined) {
-			url.searchParams.set(option, typeof value === 'boolean' ? (value ? '1' : '0') : value)
+			const param = playerOptionParams[option as keyof VimeoPlayerOptions] ?? option
+			url.searchParams.set(param, typeof value === 'boolean' ? (value ? '1' : '0') : value)
 		}
 	}
 
@@ -59,7 +66,10 @@ export function VimeoEmbed({
 	playerOptions,
 	privacyHash,
 	referrerPolicy = 'strict-origin-when-cross-origin',
-	sandbox = 'allow-scripts allow-same-origin allow-presentation allow-popups',
+	// `allow-popups-to-escape-sandbox` keeps the player's "Watch on Vimeo" link usable,
+	// and `allow-forms` keeps its settings controls working. Top-level navigation,
+	// downloads, and modals stay blocked.
+	sandbox = 'allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms',
 	title,
 	videoId,
 	...props

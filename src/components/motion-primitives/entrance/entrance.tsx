@@ -1,7 +1,14 @@
 'use client'
 
 import { useRender } from '@base-ui/react/use-render'
-import { motion, type HTMLMotionProps, type Variants, useReducedMotion } from 'motion/react'
+import {
+	motion,
+	type HTMLMotionProps,
+	type Transition,
+	type Variant,
+	type Variants,
+	useReducedMotion,
+} from 'motion/react'
 import { createContext, type ReactElement, type Ref, useContext } from 'react'
 
 export type EntranceEffect = 'reveal' | 'fade' | 'slide-up' | 'scale' | 'blur'
@@ -22,8 +29,8 @@ export interface EntranceProps extends Omit<
 	render?: useRender.RenderProp
 	/** Overrides the selected effect's Motion variants. */
 	variants?: Variants
-	/** Overrides Motion's viewport options. */
-	viewport?: HTMLMotionProps<'div'>['viewport']
+	/** Overrides Motion's viewport options. Replay behavior is owned by `once`. */
+	viewport?: Omit<NonNullable<HTMLMotionProps<'div'>['viewport']>, 'once'>
 }
 
 export type EntranceRevealProps = Omit<EntranceProps, 'effect'>
@@ -35,7 +42,10 @@ export interface EntranceStaggerProps extends Omit<EntranceProps, 'children' | '
 	delay?: number
 	/** Delays each successive item in seconds. */
 	stagger?: number
-	/** Overrides the Motion transition applied to the stagger group. */
+	/**
+	 * Merged into the group's `visible` transition alongside `delay` and `stagger`,
+	 * so it configures how children are orchestrated rather than the group itself.
+	 */
 	transition?: EntranceProps['transition']
 }
 
@@ -91,6 +101,27 @@ const defaultTransition: NonNullable<EntranceProps['transition']> = {
 	ease: [0.22, 1, 0.36, 1],
 }
 
+const defaultViewport = { margin: '0px 0px -20% 0px' } as const
+
+/**
+ * Folds orchestration into a variant's own transition instead of replacing the
+ * variant, so supplying `variants` to a stagger group cannot silently discard
+ * `delay` and `stagger`. Anything the variant states explicitly still wins.
+ */
+function withOrchestration(variant: Variant | undefined, orchestration: Transition): Variant {
+	if (typeof variant === 'function') {
+		return (...args: Parameters<typeof variant>) => {
+			const resolved = variant(...args)
+
+			if (typeof resolved === 'string') return resolved
+
+			return { ...resolved, transition: { ...orchestration, ...resolved.transition } }
+		}
+	}
+
+	return { ...variant, transition: { ...orchestration, ...variant?.transition } }
+}
+
 interface EntrancePrimitiveProps extends EntranceProps {
 	effect: EntranceEffect
 	slot: 'entrance-fade' | 'entrance-reveal' | 'entrance'
@@ -125,9 +156,7 @@ function EntrancePrimitive({
 			transition={shouldReduceMotion ? { duration: 0 } : transition}
 			variants={variants}
 			viewport={
-				isControlled || shouldReduceMotion
-					? undefined
-					: { margin: '0px 0px -20% 0px', once, ...viewport }
+				isControlled || shouldReduceMotion ? undefined : { ...defaultViewport, ...viewport, once }
 			}
 			whileInView={isControlled || shouldReduceMotion ? undefined : 'visible'}
 		/>
@@ -157,18 +186,21 @@ export function EntranceStaggerItem({
 	...props
 }: EntranceStaggerItemProps): ReactElement {
 	const context = useContext(EntranceStaggerContext)
+	const shouldReduceMotion = useReducedMotion()
 
-	if (!context) {
-		throw new Error('Entrance.Stagger.Item must be rendered inside Entrance.Stagger.')
+	if (process.env.NODE_ENV !== 'production' && !context) {
+		console.error(
+			'Entrance.Stagger.Item must be rendered inside Entrance.Stagger. It renders its content unanimated outside a group.',
+		)
 	}
 
-	const effect = effectOverride ?? context.effect
+	const effect = effectOverride ?? context?.effect ?? 'reveal'
 
 	return (
 		<MotionEntranceElement
 			{...props}
 			data-slot="entrance-stagger-item"
-			transition={transition}
+			transition={shouldReduceMotion ? { duration: 0 } : transition}
 			variants={variants ?? effectVariants[effect]}
 		/>
 	)
@@ -195,13 +227,13 @@ export function EntranceStaggerRoot({
 				? 'visible'
 				: 'hidden'
 			: undefined
-	const groupVariants: Variants = variants ?? {
-		hidden: {},
-		visible: {
-			transition: shouldReduceMotion
-				? { delayChildren: 0, staggerChildren: 0 }
-				: { delayChildren: delay, staggerChildren: stagger, ...transition },
-		},
+	const orchestration: Transition = shouldReduceMotion
+		? { delayChildren: 0, staggerChildren: 0 }
+		: { delayChildren: delay, staggerChildren: stagger, ...transition }
+	const baseVariants = variants ?? { hidden: {}, visible: {} }
+	const groupVariants: Variants = {
+		...baseVariants,
+		visible: withOrchestration(baseVariants.visible, orchestration),
 	}
 
 	return (
@@ -213,9 +245,7 @@ export function EntranceStaggerRoot({
 				initial={shouldReduceMotion ? false : 'hidden'}
 				variants={groupVariants}
 				viewport={
-					isControlled || shouldReduceMotion
-						? undefined
-						: { margin: '0px 0px -20% 0px', once, ...viewport }
+					isControlled || shouldReduceMotion ? undefined : { ...defaultViewport, ...viewport, once }
 				}
 				whileInView={isControlled || shouldReduceMotion ? undefined : 'visible'}
 			>
