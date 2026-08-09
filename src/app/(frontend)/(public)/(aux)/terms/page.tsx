@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import { Main } from '@/components/layout/main'
 import RichText from '@/components/payload/rich-text'
+import { Main } from '@/components/shell/main'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Muted } from '@/components/ui/typography'
 

@@ -2,8 +2,8 @@ import Image from 'next/image'
 
 import { ImageZoom } from '@/components/core/image-zoom'
 import { Container, MediaFrame, Section } from '@/components/layout'
-import { Main } from '@/components/layout/main'
 import { Entrance, GlowEffect } from '@/components/motion-primitives'
+import { Main } from '@/components/shell/main'
 
 import image from '../../../../../public/website-template-OG.png'
 
@@ -75,12 +75,7 @@ export default function FeaturesPage() {
 				</Container>
 			</Section>
 
-			<Section
-				aria-labelledby="full-width-feature-title"
-				layout="full-width"
-				spacing="lg"
-				variant="muted"
-			>
+			<Section aria-labelledby="full-width-feature-title" spacing="lg" variant="muted">
 				<Container>
 					<Section.Header align="center">
 						<Section.Eyebrow>Every layer is explicit</Section.Eyebrow>

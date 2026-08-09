@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { Container, Section } from '@/components/layout'
-import { Main } from '@/components/layout/main'
 import { LivePreviewListener } from '@/components/payload/live-preview-listener'
+import { Main } from '@/components/shell/main'
 
 import { generateMeta } from '@/lib/payload/generate-meta'
 import { getDocument } from '@/lib/payload/get-cached-document'

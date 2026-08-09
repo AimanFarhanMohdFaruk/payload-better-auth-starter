@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { BetterAuthUIProvider } from '@/components/layout/better-auth-ui-provider'
-import { ThemeProvider } from '@/components/layout/theme-provider'
+import { BetterAuthUIProvider } from '@/components/shell/better-auth-ui-provider'
+import { ThemeProvider } from '@/components/shell/theme-provider'
 import { AnchoredToastProvider, ToastProvider } from '@/components/ui/toast'
 
 import { BetterAuthProvider } from '@/lib/auth/context'

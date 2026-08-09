@@ -8,7 +8,7 @@ import {
 	type Transition,
 	useReducedMotion,
 } from 'motion/react'
-import { forwardRef, type CSSProperties, type ReactElement } from 'react'
+import type { CSSProperties, ReactElement, Ref } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -31,6 +31,8 @@ export interface GlowEffectProps extends Omit<
 	colors?: string[]
 	duration?: number
 	mode?: GlowEffectMode
+	/** Forwarded to the rendered element. */
+	ref?: Ref<HTMLDivElement>
 	render?: useRender.RenderProp
 	scale?: number
 	transition?: Transition
@@ -48,28 +50,23 @@ const blurClasses: Record<Exclude<GlowEffectBlur, number>, string> = {
 
 type GlowEffectElementProps = useRender.ComponentProps<'div'>
 
-const GlowEffectElement = forwardRef<HTMLDivElement, GlowEffectElementProps>(
-	function GlowEffectElement({ render, ...props }, ref) {
-		return useRender({ defaultTagName: 'div', props, ref, render })
-	},
-)
+function GlowEffectElement({ render, ...props }: GlowEffectElementProps) {
+	return useRender({ defaultTagName: 'div', props, render })
+}
 
 const MotionGlowEffectElement = motion.create(GlowEffectElement)
 
-export const GlowEffect = forwardRef<HTMLDivElement, GlowEffectProps>(function GlowEffect(
-	{
-		blur = 'medium',
-		className,
-		colors = ['#FF5733', '#33FF57', '#3357FF', '#F1C40F'],
-		duration = 5,
-		mode = 'rotate',
-		scale = 1,
-		style,
-		transition,
-		...props
-	},
-	ref,
-): ReactElement {
+export function GlowEffect({
+	blur = 'medium',
+	className,
+	colors = ['#FF5733', '#33FF57', '#3357FF', '#F1C40F'],
+	duration = 5,
+	mode = 'rotate',
+	scale = 1,
+	style,
+	transition,
+	...props
+}: GlowEffectProps): ReactElement {
 	const shouldReduceMotion = useReducedMotion()
 	const staticGradient = `linear-gradient(to right, ${colors.join(', ')})`
 	const baseTransition: Transition = {
@@ -116,7 +113,6 @@ export const GlowEffect = forwardRef<HTMLDivElement, GlowEffectProps>(function G
 	return (
 		<MotionGlowEffectElement
 			{...props}
-			ref={ref}
 			animate={animation}
 			className={cn(
 				'pointer-events-none absolute inset-0 h-full w-full scale-[var(--glow-scale)] transform-gpu',
@@ -127,4 +123,4 @@ export const GlowEffect = forwardRef<HTMLDivElement, GlowEffectProps>(function G
 			style={glowStyle}
 		/>
 	)
-})
+}

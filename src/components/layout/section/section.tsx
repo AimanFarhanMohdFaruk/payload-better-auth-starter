@@ -1,20 +1,13 @@
-'use client'
-
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import type { VariantProps } from 'class-variance-authority'
-import { createContext, type ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 import { cn } from '@/lib/utils'
 
 import { sectionHeaderVariants, sectionVariants } from './section.styles'
 
-type SectionLayout = NonNullable<VariantProps<typeof sectionVariants>['layout']>
-
-const SectionContext = createContext<{ layout: SectionLayout }>({ layout: 'default' })
-
 export interface SectionRootProps extends useRender.ComponentProps<'section'> {
-	layout?: VariantProps<typeof sectionVariants>['layout']
 	spacing?: VariantProps<typeof sectionVariants>['spacing']
 	variant?: VariantProps<typeof sectionVariants>['variant']
 }
@@ -31,31 +24,23 @@ export type SectionContentProps = useRender.ComponentProps<'div'>
 export type SectionMediaProps = useRender.ComponentProps<'div'>
 
 export function SectionRoot({
-	children,
 	className,
-	layout = 'default',
 	render,
 	spacing,
 	variant,
 	...props
 }: SectionRootProps): ReactElement {
-	const resolvedLayout = layout ?? 'default'
 	const defaultProps = {
-		children,
-		className: cn(sectionVariants({ className, layout: resolvedLayout, spacing, variant })),
-		'data-layout': resolvedLayout,
+		className: cn(sectionVariants({ className, spacing, variant })),
 		'data-slot': 'section',
 		'data-variant': variant ?? 'default',
 	}
-	const element = useRender({
+
+	return useRender({
 		defaultTagName: 'section',
 		props: mergeProps<'section'>(defaultProps, props),
 		render,
 	})
-
-	return (
-		<SectionContext.Provider value={{ layout: resolvedLayout }}>{element}</SectionContext.Provider>
-	)
 }
 
 export function SectionHeader({

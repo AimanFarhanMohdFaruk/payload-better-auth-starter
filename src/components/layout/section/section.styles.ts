@@ -2,15 +2,10 @@ import { cva } from 'class-variance-authority'
 
 export const sectionVariants = cva('relative', {
 	defaultVariants: {
-		layout: 'default',
 		spacing: 'md',
 		variant: 'default',
 	},
 	variants: {
-		layout: {
-			default: '',
-			'full-width': '',
-		},
 		spacing: {
 			lg: 'py-12 sm:py-16 lg:py-28',
 			md: 'py-8 sm:py-12 lg:py-16',

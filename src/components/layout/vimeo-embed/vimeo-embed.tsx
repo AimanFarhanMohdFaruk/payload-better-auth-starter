@@ -1,4 +1,4 @@
-import { forwardRef, type ComponentPropsWithoutRef, type ReactElement } from 'react'
+import type { ComponentPropsWithRef, ReactElement } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -28,7 +28,7 @@ export interface VimeoSourceProps {
 }
 
 export interface VimeoEmbedProps
-	extends VimeoSourceProps, Omit<ComponentPropsWithoutRef<'iframe'>, 'src' | 'srcDoc' | 'title'> {
+	extends VimeoSourceProps, Omit<ComponentPropsWithRef<'iframe'>, 'src' | 'srcDoc' | 'title'> {
 	playerOptions?: VimeoPlayerOptions
 	title: string
 }
@@ -51,26 +51,22 @@ function buildVimeoUrl({
 	return url.toString()
 }
 
-export const VimeoEmbed = forwardRef<HTMLIFrameElement, VimeoEmbedProps>(function VimeoEmbed(
-	{
-		allow = 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share',
-		allowFullScreen = true,
-		className,
-		loading = 'lazy',
-		playerOptions,
-		privacyHash,
-		referrerPolicy = 'strict-origin-when-cross-origin',
-		sandbox = 'allow-scripts allow-same-origin allow-presentation allow-popups',
-		title,
-		videoId,
-		...props
-	},
-	ref,
-): ReactElement {
+export function VimeoEmbed({
+	allow = 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share',
+	allowFullScreen = true,
+	className,
+	loading = 'lazy',
+	playerOptions,
+	privacyHash,
+	referrerPolicy = 'strict-origin-when-cross-origin',
+	sandbox = 'allow-scripts allow-same-origin allow-presentation allow-popups',
+	title,
+	videoId,
+	...props
+}: VimeoEmbedProps): ReactElement {
 	return (
 		<iframe
 			{...props}
-			ref={ref}
 			allow={allow}
 			allowFullScreen={allowFullScreen}
 			className={cn('aspect-video w-full border-0', className)}
@@ -82,4 +78,4 @@ export const VimeoEmbed = forwardRef<HTMLIFrameElement, VimeoEmbedProps>(functio
 			title={title}
 		/>
 	)
-})
+}

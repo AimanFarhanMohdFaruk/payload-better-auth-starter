@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 import { AcmeLogoIcon } from '@/components/icons'
 import { Container } from '@/components/layout'
-import { ThemeSelector } from '@/components/layout/theme-switch'
 import { CMSLink } from '@/components/payload/cms-link'
+import { ThemeSelector } from '@/components/shell/theme-switch'
 
 import { getGlobal } from '@/lib/payload/get-globals'
 

@@ -1,9 +1,9 @@
 import { Container, Section } from '@/components/layout'
-import { Main } from '@/components/layout/main'
 import { Entrance } from '@/components/motion-primitives'
 import { DevTools } from '@/components/screen/home/dev-tools'
 import { Features } from '@/components/screen/home/features'
 import { ThemeColors } from '@/components/screen/home/theme-colors'
+import { Main } from '@/components/shell/main'
 
 export default function Home() {
 	return (

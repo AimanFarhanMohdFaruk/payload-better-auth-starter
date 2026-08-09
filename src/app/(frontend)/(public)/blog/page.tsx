@@ -2,8 +2,8 @@ import type { Metadata } from 'next/types'
 import { Suspense } from 'react'
 
 import { Container, Section } from '@/components/layout'
-import { Main } from '@/components/layout/main'
 import { Entrance } from '@/components/motion-primitives'
+import { Main } from '@/components/shell/main'
 
 import type { SearchParams } from 'nuqs/server'
 import { BlogFilters, BlogFiltersSkeleton } from './blog-filters'

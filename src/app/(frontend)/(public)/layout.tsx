@@ -2,8 +2,8 @@ import '../globals.css'
 
 import type { Metadata } from 'next'
 
-import Footer from '@/components/layout/footer'
-import Header from '@/components/layout/header'
+import Footer from '@/components/shell/footer'
+import Header from '@/components/shell/header'
 
 import { getServerSideURL } from '@/lib/payload'
 import { mergeOpenGraph } from '@/lib/payload/merge-open-graph'

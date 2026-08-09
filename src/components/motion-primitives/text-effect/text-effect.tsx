@@ -11,7 +11,7 @@ import {
 	type Variants,
 	useReducedMotion,
 } from 'motion/react'
-import React, { forwardRef, type ReactElement } from 'react'
+import React, { type ReactElement, type Ref } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -28,6 +28,8 @@ export interface TextEffectProps extends Omit<
 	isActive?: boolean
 	per?: TextEffectPer
 	preset?: TextEffectPreset
+	/** Forwarded to the rendered element. */
+	ref?: Ref<HTMLParagraphElement>
 	render?: useRender.RenderProp
 	segmentTransition?: Transition
 	segmentWrapperClassName?: string
@@ -182,31 +184,26 @@ function withTransition(
 
 type TextEffectElementProps = useRender.ComponentProps<'p'>
 
-const TextEffectElement = forwardRef<HTMLParagraphElement, TextEffectElementProps>(
-	function TextEffectElement({ render, ...props }, ref) {
-		return useRender({ defaultTagName: 'p', props, ref, render })
-	},
-)
+function TextEffectElement({ render, ...props }: TextEffectElementProps) {
+	return useRender({ defaultTagName: 'p', props, render })
+}
 
 const MotionTextEffectElement = motion.create(TextEffectElement)
 
-export const TextEffect = forwardRef<HTMLParagraphElement, TextEffectProps>(function TextEffect(
-	{
-		children,
-		containerTransition,
-		delay = 0,
-		isActive = true,
-		per = 'word',
-		preset = 'fade',
-		segmentTransition,
-		segmentWrapperClassName,
-		speedReveal = 1,
-		speedSegment = 1,
-		variants,
-		...props
-	},
-	ref,
-): ReactElement {
+export function TextEffect({
+	children,
+	containerTransition,
+	delay = 0,
+	isActive = true,
+	per = 'word',
+	preset = 'fade',
+	segmentTransition,
+	segmentWrapperClassName,
+	speedReveal = 1,
+	speedSegment = 1,
+	variants,
+	...props
+}: TextEffectProps): ReactElement {
 	const shouldReduceMotion = useReducedMotion()
 	const segments = splitText(children, per)
 	const baseVariants = presetVariants[preset]
@@ -241,7 +238,6 @@ export const TextEffect = forwardRef<HTMLParagraphElement, TextEffectProps>(func
 			{isActive ? (
 				<MotionTextEffectElement
 					{...props}
-					ref={ref}
 					animate="visible"
 					data-slot="text-effect"
 					exit="exit"
@@ -262,4 +258,4 @@ export const TextEffect = forwardRef<HTMLParagraphElement, TextEffectProps>(func
 			) : null}
 		</AnimatePresence>
 	)
-})
+}

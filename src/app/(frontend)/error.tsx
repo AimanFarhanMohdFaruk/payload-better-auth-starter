@@ -4,7 +4,7 @@ import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect } from 'react'
 
-import { Main } from '@/components/layout/main'
+import { Main } from '@/components/shell/main'
 import { Button } from '@/components/ui/button'
 import {
 	Empty,

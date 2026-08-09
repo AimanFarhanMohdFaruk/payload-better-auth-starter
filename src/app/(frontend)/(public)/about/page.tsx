@@ -1,5 +1,5 @@
 import { Container, Section } from '@/components/layout'
-import { Main } from '@/components/layout/main'
+import { Main } from '@/components/shell/main'
 import { Badge } from '@/components/ui/badge'
 import {
 	Table,

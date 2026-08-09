@@ -1,5 +1,5 @@
 import { Container } from '@/components/layout'
-import { Main } from '@/components/layout/main'
+import { Main } from '@/components/shell/main'
 
 import { AccountView } from '@daveyplate/better-auth-ui'
 import { accountViewPaths } from '@daveyplate/better-auth-ui/server'

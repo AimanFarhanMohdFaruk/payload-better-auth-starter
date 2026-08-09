@@ -1,4 +1,4 @@
-import { Main } from '@/components/layout/main'
+import { Main } from '@/components/shell/main'
 
 import { AuthView } from '@daveyplate/better-auth-ui'
 import { authViewPaths } from '@daveyplate/better-auth-ui/server'
